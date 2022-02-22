@@ -5,6 +5,8 @@ import pkgutil
 from src.scraping.web_driver_utils import extract_html, take_screenshot
 import shutil
 import uuid
+import datetime
+
 class ElementArchiver:
     def __init__(self, data_location, screenshot_prefix="screenshot", html_prefix="styled_html_",index_file="index.json"):
         self.data_location = data_location
@@ -32,26 +34,33 @@ class ElementArchiver:
 
         pass
 
-    def add_snapshot(self, driver: webdriver.firefox,  extracted_element : webdriver.firefox, attributes : dict):
-        styled_html = extract_html(driver, extracted_element)
+    def add_snapshot(self, driver: webdriver.firefox,  extracted_element: webdriver.firefox, url: str, attributes : dict):
         # image = take_screenshot(extracted_element)
         id = uuid.uuid4()
+
         snapshot_entry = {
-            "id": id,
-            "taken": "",
-            "page": "",
+            "id": str(id),
+            "taken": str(datetime.datetime.now()),
+            "page": url,
             "width": 500,
             "height": 700,
-            "attributes": {},
+            "attributes": attributes,
             "screenShotFile": f"{self.screenshot_prefix}{id}.png",
             "htmlFile": f"{self.html_prefix}{id}.html"
         }
 
+        extracted_element.screenshot(
+            os.path.join(self.data_location, self.index_dictionary["configuration"]["screenshotFolder"],
+                         snapshot_entry["screenShotFile"]))
+
+        styled_html = extract_html(driver, extracted_element)
         with open(os.path.join(self.data_location, self.index_dictionary["configuration"]["htmlFolder"], snapshot_entry["htmlFile"]), "w") as html_file:
             html_file.writelines(styled_html)
 
-        extracted_element.screenshot(os.path.join(self.data_location, self.index_dictionary["configuration"]["screenshotFolder"], snapshot_entry["screenShotFile"]))
+        self.index_dictionary["snapshots"] += [snapshot_entry]
 
 
     def save(self):
+        with open(os.path.join(self.data_location, self.index_file), 'w') as fp:
+            json.dump(self.index_dictionary, fp)
         pass

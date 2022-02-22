@@ -18,4 +18,7 @@ class ArchiveBuilder:
         extracted_elements = element_extractor.extract_elements(self.driver)
 
         for extracted_element in extracted_elements:
-            self.element_archiver.add_snapshot(self.driver, extracted_element, {})
+            self.element_archiver.add_snapshot(self.driver, extracted_element, url, {})
+
+    def save(self):
+        self.element_archiver.save()
