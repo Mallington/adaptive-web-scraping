@@ -42,8 +42,8 @@ class ElementArchiver:
             "id": str(id),
             "taken": str(datetime.datetime.now()),
             "page": url,
-            "width": 500,
-            "height": 700,
+            "width": extracted_element.size['width'],
+            "height": extracted_element.size['height'],
             "attributes": attributes,
             "screenShotFile": f"{self.screenshot_prefix}{id}.png",
             "htmlFile": f"{self.html_prefix}{id}.html"
