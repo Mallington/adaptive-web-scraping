@@ -1,0 +1,16 @@
+{
+  "configuration": {
+    "screenshotFolder": "screenshots/",
+    "htmlFolder": "html/"
+  },
+  "snapshots": [{
+    "id": "fsdhhfsd",
+    "taken": "",
+    "page": "",
+    "width": 500,
+    "height": 700,
+    "attributes": {},
+    "screenShotFile": "screenshot-id.png",
+    "htmlFile": "html-id.html"
+  }]
+}
