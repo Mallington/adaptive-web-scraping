@@ -1,0 +1,8 @@
+names:
+- title
+- paragraph
+- figure
+nc: 3
+path: ./
+train: /Users/mathew/github/adaptive-web-scraping/archive-test-family/train/
+val: /Users/mathew/github/adaptive-web-scraping/archive-test-family/val/
