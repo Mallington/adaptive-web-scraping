@@ -31,12 +31,17 @@ class ElementArchiver:
         # Double check relevant folders are there
         os.makedirs(os.path.join(self.data_location, self.index_dictionary["configuration"]["screenshotFolder"]), exist_ok=True)
         os.makedirs(os.path.join(self.data_location, self.index_dictionary["configuration"]["htmlFolder"]), exist_ok=True)
+        os.makedirs(os.path.join(self.data_location, self.index_dictionary["configuration"]["masterScreenshotFolder"]), exist_ok=True)
 
         pass
 
-    def add_snapshot(self, driver: webdriver.firefox,  extracted_element: webdriver.firefox, url: str, attributes : dict):
+    def add_master_snapshot(self, snapshot_details: dict):
+        self.index_dictionary["master_snapshots"] += [snapshot_details]
+
+    def add_snapshot(self, driver: webdriver.firefox,  extracted_element: webdriver.firefox, url: str, category: str ,attributes : dict):
         # image = take_screenshot(extracted_element)
         id = uuid.uuid4()
+
 
         snapshot_entry = {
             "id": str(id),
@@ -46,18 +51,23 @@ class ElementArchiver:
             "height": extracted_element.size['height'],
             "attributes": attributes,
             "screenShotFile": f"{self.screenshot_prefix}{id}.png",
-            "htmlFile": f"{self.html_prefix}{id}.html"
+            "htmlFile": f"{self.html_prefix}{id}.html",
+            "category": category
         }
 
-        extracted_element.screenshot(
-            os.path.join(self.data_location, self.index_dictionary["configuration"]["screenshotFolder"],
-                         snapshot_entry["screenShotFile"]))
-
-        styled_html = extract_html(driver, extracted_element)
-        with open(os.path.join(self.data_location, self.index_dictionary["configuration"]["htmlFolder"], snapshot_entry["htmlFile"]), "w") as html_file:
-            html_file.writelines(styled_html)
+        #Skip these bits
+        # extracted_element.screenshot(
+        #     os.path.join(self.data_location, self.index_dictionary["configuration"]["screenshotFolder"],
+        #                  snapshot_entry["screenShotFile"]))
+        #
+        # styled_html = extract_html(driver, extracted_element)
+        # with open(os.path.join(self.data_location, self.index_dictionary["configuration"]["htmlFolder"], snapshot_entry["htmlFile"]), "w") as html_file:
+        #     html_file.writelines(styled_html)
 
         self.index_dictionary["snapshots"] += [snapshot_entry]
+
+        if category not in self.index_dictionary["categories"]:
+            self.index_dictionary["categories"].append(category)
 
 
     def save(self):

@@ -1,7 +1,10 @@
 {
   "configuration": {
     "screenshotFolder": "screenshots/",
-    "htmlFolder": "html/"
+    "htmlFolder": "html/",
+    "masterScreenshotFolder": "master-screenshots/"
   },
-  "snapshots": []
+  "snapshots": [],
+  "master_snapshots": [],
+  "categories": []
 }

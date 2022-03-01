@@ -1,3 +1,5 @@
+import os.path
+import uuid
 from typing import List
 
 from selenium import webdriver
@@ -15,10 +17,41 @@ class ArchiveBuilder:
 
     def add_site(self, url: str, element_extractor: ElementExtractorInterface):
         self.driver.get(url)
-        extracted_elements = element_extractor.extract_elements(self.driver)
 
-        for extracted_element in extracted_elements:
-            self.element_archiver.add_snapshot(self.driver, extracted_element, url, {})
+        # self.driver.get_window_rect().
+        master_screenshot_id = str(uuid.uuid4())
+        master_screenshot_location = f"{master_screenshot_id}.png"
+        self.driver.save_screenshot(
+            os.path.join(self.element_archiver.data_location, self.element_archiver.index_dictionary["configuration"]["masterScreenshotFolder"], master_screenshot_location))
+        self.element_archiver.add_master_snapshot({
+            "id": master_screenshot_id,
+            "master_screenshot_file": master_screenshot_location
+        })
+
+        for category in element_extractor.available_categories():
+            extracted_elements = element_extractor.extract_elements(self.driver, category)
+            for extracted_element in extracted_elements:
+                try:
+                    doc_width = self.driver.execute_script("""return window.innerWidth""")
+                    doc_height = self.driver.execute_script("""return window.innerHeight""")
+                    attributes= {
+                        "dimensions": {
+                            "x": (extracted_element.location['x'] + extracted_element.size['width'] / 2) / doc_width,
+                            "y": (extracted_element.location['y'] + extracted_element.size['height'] / 2) / doc_height,
+                            "width": extracted_element.size['width']/doc_width,
+                            "height": extracted_element.size['height']/doc_height
+                        },
+                        "master_screenshot_id": master_screenshot_id
+                    }
+
+
+                    self.element_archiver.add_snapshot(self.driver, extracted_element, url, category, attributes)
+                except Exception as e:
+                    print("Error: Skipping Element")
+                    print(e)
 
     def save(self):
         self.element_archiver.save()
+
+    def close(self):
+        self.driver.quit()
