@@ -14,9 +14,9 @@ class DomExtractorSelector(ElementExtractorInterface):
         """Extract all matching dom elements"""
         os.system(f"say {category} elements &")
 
-        run_script(dom, os.path.join(os.path.dirname(__file__), '../resources/jquery.js'),
-                os.path.join(os.path.dirname(__file__), '../resources/domoutlinelib.js'),
-                os.path.join(os.path.dirname(__file__), '../resources/domoutlinerun.js'))
+        run_script(dom, os.path.join(os.path.dirname(__file__), '../../resources/jquery.js'),
+                   os.path.join(os.path.dirname(__file__), '../../resources/domoutlinelib.js'),
+                   os.path.join(os.path.dirname(__file__), '../../resources/domoutlinerun.js'))
 
         while not dom.execute_script("""return window.selection_finished"""):
             time.sleep(0.1)

@@ -2,13 +2,8 @@ import os.path
 
 import src.scraping.hyper_physics_urls
 from src.scraping.archive_builder import ArchiveBuilder
-from src.scraping.support.etsy_extractor import EtsyExtractor
-from src.scraping.support.dom_selector_extractor import DomExtractorSelector
+from src.scraping.support.extractors.dom_selector_extractor import DomExtractorSelector
 from src.scraping.yolo_config_generator import YoloConfigGenerator
-from src.yolo.yolo_box_visualiser import YoloBoxVisualiser
-from tkinter import *
-from tkinter import messagebox
-import cv2
 import os
 # click event handler
 
