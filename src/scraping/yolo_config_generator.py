@@ -50,5 +50,5 @@ class YoloConfigGenerator:
         with open(os.path.join(self.data_location, yolo_config_file), 'w') as yaml_file:
             yaml.dump(self.yolo_config, yaml_file, default_flow_style=False)
 if __name__ == "__main__":
-    generator = YoloConfigGenerator("/Users/mathew/github/adaptive-web-scraping/archive-test")
+    generator = YoloConfigGenerator("/Users/mathew/github/adaptive-web-scraping/data/CoVa-adapted")
     generator.generate_configuration()

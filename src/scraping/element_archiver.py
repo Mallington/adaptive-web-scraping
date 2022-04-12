@@ -69,6 +69,47 @@ class ElementArchiver:
         if category not in self.index_dictionary["categories"]:
             self.index_dictionary["categories"].append(category)
 
+    def add_snapshot_manually(self, category: str , bounding_rect, doc_width, doc_height, master_screenshot_id):
+        # image = take_screenshot(extracted_element)
+        id = uuid.uuid4()
+        x, y, width, height = bounding_rect
+        attributes = {
+            "dimensions": {
+                "x": (x + width / 2) / doc_width,
+                "y": (y + height / 2) / doc_height,
+                "width": width / doc_width,
+                "height": height / doc_height
+            },
+            "master_screenshot_id": master_screenshot_id
+        }
+
+
+        snapshot_entry = {
+            "id": str(id),
+            "taken": str(datetime.datetime.now()),
+            "page": "UnknownPage",
+            "width": width,
+            "height": height,
+            "attributes": attributes,
+            "screenShotFile": f"{self.screenshot_prefix}{id}.png",
+            "htmlFile": "Not Known",
+            "category": category
+        }
+
+        #Skip these bits
+        # extracted_element.screenshot(
+        #     os.path.join(self.data_location, self.index_dictionary["configuration"]["screenshotFolder"],
+        #                  snapshot_entry["screenShotFile"]))
+        #
+        # styled_html = extract_html(driver, extracted_element)
+        # with open(os.path.join(self.data_location, self.index_dictionary["configuration"]["htmlFolder"], snapshot_entry["htmlFile"]), "w") as html_file:
+        #     html_file.writelines(styled_html)
+
+        self.index_dictionary["snapshots"] += [snapshot_entry]
+
+        if category not in self.index_dictionary["categories"]:
+            self.index_dictionary["categories"].append(category)
+
 
     def save(self):
         with open(os.path.join(self.data_location, self.index_file), 'w') as fp:
