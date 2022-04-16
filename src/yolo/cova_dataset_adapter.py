@@ -5,6 +5,11 @@ import cv2
 import os
 import shutil
 
+import cv2
+
+from src.utils.cv2_utils import draw_labelled_box
+
+
 def filter_labels(labels:list, filter_categories:list):
     filtered_labels = []
     other_labels = []
@@ -95,6 +100,10 @@ class CovaDatasetAdapter():
         for clustered_other_label in clustered_other_labels:
             self.element_archiver.add_snapshot_manually("not_interesting", clustered_other_label, width, height, master_screenshot_id)
 
+        image = draw_labelled_box(image, filtered_rect, "Filtered rec")
+
+        cv2.imshow( f"Debug {image_file} filtered rect", image)
+
     def __list_viable_ids(self, folder):
         return [".".join(f.split(".")[:-1]) for f in os.listdir(folder) if os.path.isfile(os.path.join(folder,f))]
 
@@ -107,7 +116,7 @@ class CovaDatasetAdapter():
             labels_file = os.path.join(labels_folder, f"{id}.csv")
 
             try:
-                self.process_set(image_file, labels_file, filter_categories)
+                self.process_set(image_file, labels_file, filter_categories=filter_categories)
             except FileNotFoundError as e:
                 print(f"Processing {id} failed because {e}")
             i+=1

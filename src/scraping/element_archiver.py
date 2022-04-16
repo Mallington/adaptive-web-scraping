@@ -72,7 +72,11 @@ class ElementArchiver:
     def add_snapshot_manually(self, category: str , bounding_rect, doc_width, doc_height, master_screenshot_id):
         # image = take_screenshot(extracted_element)
         id = uuid.uuid4()
-        x, y, width, height = bounding_rect
+        x, y, max_x, max_y = bounding_rect
+
+        width = max_x - x
+        height = max_y - y
+
         attributes = {
             "dimensions": {
                 "x": (x + width / 2) / doc_width,

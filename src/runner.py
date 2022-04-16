@@ -24,12 +24,16 @@ def confirm(question, default_no=True):
     return False
 if __name__ == "__main__":
     print("Adaptive Web Scraping by Github.com/Mallington")
-    archive_location = "/Users/mathew/github/adaptive-web-scraping/demo-train/"
+    archive_location = "/Users/mathew/github/adaptive-web-scraping/shopping-validation/"
     # product_extractor = DomExtractorSelector(["title", "summary", "figure", "formula", "table"])
-    product_extractor = DomExtractorSelector(["title", "paragraph", "figure"])
+    product_extractor = DomExtractorSelector(["interest_area", "not_interesting"])
     archive_builder = ArchiveBuilder(archive_location)
 
     myJSON = src.scraping.hyper_physics_urls.hyper_physics_urls
+
+    myJSON=["https://www.amazon.co.uk/Echo-Dot-3rd-Gen-Charcoal/dp/B07PJV3JPR/",
+            "https://uk.banggood.com/Vintage-Floral-Printed-O-neck-Long-Sleeve-Irregular-Hem-T-shirt-For-Women-p-1743627.html",
+            "https://uk.banggood.com/Women-Vintage-Abstract-Figure-Printed-O-Neck-Irregular-Hem-Long-Sleeve-Blouse-p-1743629.html"]
     count =0
 
     try:

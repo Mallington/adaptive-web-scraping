@@ -1,0 +1,7 @@
+names:
+- interest_area
+- not_interesting
+nc: 2
+path: ./
+train: /Users/mathew/github/adaptive-web-scraping/data/shopping-validation/train/
+val: /Users/mathew/github/adaptive-web-scraping/data/shopping-validation/val/
