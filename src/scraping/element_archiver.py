@@ -1,8 +1,6 @@
 import os
 import json
 from selenium import webdriver
-import pkgutil
-from src.scraping.web_driver_utils import extract_html, take_screenshot
 import shutil
 import uuid
 import datetime

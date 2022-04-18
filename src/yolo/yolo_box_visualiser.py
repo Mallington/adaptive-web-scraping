@@ -3,6 +3,25 @@ import cv2
 from src.utils.cv2_utils import draw_bounding_box
 
 
+def show_image_with_labels(image, labels, relational=True, names=None, window_name="Labels", filter_categories=None):
+    height, width, _ = image.shape
+
+    for label in labels:
+        if relational:
+            category, rel_x, rel_y, rel_width, rel_height = label
+            x = int((rel_x - rel_width / 2) * width)
+            y = int((rel_y - rel_height / 2) * height)
+            box_width = int(rel_width * width)
+            box_height = int(rel_height * height)
+        else:
+            x, y, box_width, box_height, category = [int(a) for a in label]
+
+        if filter_categories is None or label in filter_categories:
+            image = draw_bounding_box(image, (x, y, box_width, box_height, category), names)
+
+    cv2.imshow(window_name, image)
+    cv2.setWindowProperty(window_name, cv2.WND_PROP_TOPMOST, 1)
+
 class YoloBoxVisualiser:
     def __init__(self, image_file, label_file, relational=True, skip = False):
         self.image_file = image_file
@@ -26,26 +45,7 @@ class YoloBoxVisualiser:
     def show_image(self, names=None, window_name="Labels", filter_categories=None):
         image = cv2.imread(self.image_file)
 
-        height, width, _ = image.shape
-
-        for label in self.labels:
-            if self.relational:
-                category, rel_x, rel_y, rel_width, rel_height = label
-                x = int((rel_x- rel_width/2)*width)
-                y = int((rel_y- rel_height/2)*height)
-                box_width = int(rel_width*width)
-                box_height = int(rel_height * height)
-            else:
-                x, y, box_width, box_height, category = [int(a) for a in label]
-
-
-
-            if filter_categories is None or label in filter_categories:
-                image = draw_bounding_box(image, (x, y, box_width, box_height, category), names)
-
-
-        cv2.imshow(window_name, image)
-        cv2.setWindowProperty(window_name, cv2.WND_PROP_TOPMOST, 1)
+        show_image_with_labels(image, self.labels, relational=self.relational, names=names, window_name=window_name, filter_categories=filter_categories)
 
 if __name__ == "__main__":
     num = 500

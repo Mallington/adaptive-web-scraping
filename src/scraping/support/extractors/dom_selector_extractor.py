@@ -4,7 +4,7 @@ from typing import List
 from selenium import webdriver
 import time
 from src.scraping.element_extractor_interface import ElementExtractorInterface
-from src.scraping.web_driver_utils import run_script
+from src.utils.web_driver_utils import run_script
 
 class DomExtractorSelector(ElementExtractorInterface):
     def __init__(self, categories):
