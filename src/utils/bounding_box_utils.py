@@ -32,3 +32,12 @@ def get_margins(min_x_a, min_y_a,  max_x_a, max_y_a, min_x_b, min_y_b,  max_x_b,
     lower = min_x_b, max_y_a, max_x_b, max_y_b
 
     return [upper, lower, right, left]
+
+def convertRelativeToAbsolute(rel_x , rel_y, rel_width, rel_height, width, height):
+    x = int((rel_x - rel_width / 2) * width)
+    y = int((rel_y - rel_height / 2) * height)
+    box_width = int(rel_width * width)
+    box_height = int(rel_height * height)
+
+    return x, y, box_width, box_height
+

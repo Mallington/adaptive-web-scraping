@@ -10,9 +10,6 @@ from src.scraping.element_extractor_interface import ElementExtractorInterface
 
 from selenium.webdriver.remote.webelement import WebElement
 
-from src.yolo.yolo_box_visualiser import show_image_with_labels
-from src.yolo.yolo_model_handler import Model_Handler
-
 
 class ArchiveBuilder:
     def __init__(self, data_location, driver: webdriver = None):
@@ -33,38 +30,28 @@ class ArchiveBuilder:
             "master_screenshot_file": master_screenshot_location
         })
 
-        loaded_image = cv2.imread(master_screenshot_absolute_path)
 
-        model_handler = Model_Handler("/Users/mathew/github/adaptive-web-scraping/models/CoVa-dataset-train-V1.pt",
-                                      [640, 640])
-        predictions_relative, predictions_absolute = model_handler.predict(loaded_image)
+        for category in element_extractor.available_categories():
+            extracted_elements = element_extractor.extract_elements(self.driver, category)
+            for extracted_element in extracted_elements:
+                try:
+                    doc_width = self.driver.execute_script("""return window.innerWidth""")
+                    doc_height = self.driver.execute_script("""return window.innerHeight""")
+                    attributes= {
+                        "dimensions": {
+                            "x": (extracted_element.location['x'] + extracted_element.size['width'] / 2) / doc_width,
+                            "y": (extracted_element.location['y'] + extracted_element.size['height'] / 2) / doc_height,
+                            "width": extracted_element.size['width']/doc_width,
+                            "height": extracted_element.size['height']/doc_height
+                        },
+                        "master_screenshot_id": master_screenshot_id
+                    }
 
-        show_image_with_labels(loaded_image, predictions_relative, names=["interest_area", "not_interesting"])
-        print(predictions_relative, predictions_absolute)
-        cv2.waitKey(0)
-        cv2.destroyAllWindows()
 
-        # for category in element_extractor.available_categories():
-        #     extracted_elements = element_extractor.extract_elements(self.driver, category)
-        #     for extracted_element in extracted_elements:
-        #         try:
-        #             doc_width = self.driver.execute_script("""return window.innerWidth""")
-        #             doc_height = self.driver.execute_script("""return window.innerHeight""")
-        #             attributes= {
-        #                 "dimensions": {
-        #                     "x": (extracted_element.location['x'] + extracted_element.size['width'] / 2) / doc_width,
-        #                     "y": (extracted_element.location['y'] + extracted_element.size['height'] / 2) / doc_height,
-        #                     "width": extracted_element.size['width']/doc_width,
-        #                     "height": extracted_element.size['height']/doc_height
-        #                 },
-        #                 "master_screenshot_id": master_screenshot_id
-        #             }
-        #
-        #
-        #             self.element_archiver.add_snapshot(self.driver, extracted_element, url, category, attributes)
-        #         except Exception as e:
-        #             print("Error: Skipping Element")
-        #             print(e)
+                    self.element_archiver.add_snapshot(self.driver, extracted_element, url, category, attributes)
+                except Exception as e:
+                    print("Error: Skipping Element")
+                    print(e)
 
     def save(self):
         self.element_archiver.save()

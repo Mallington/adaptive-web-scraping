@@ -1,5 +1,6 @@
 import cv2
 
+from src.utils.bounding_box_utils import convertRelativeToAbsolute
 from src.utils.cv2_utils import draw_bounding_box
 
 
@@ -9,10 +10,7 @@ def show_image_with_labels(image, labels, relational=True, names=None, window_na
     for label in labels:
         if relational:
             category, rel_x, rel_y, rel_width, rel_height = label
-            x = int((rel_x - rel_width / 2) * width)
-            y = int((rel_y - rel_height / 2) * height)
-            box_width = int(rel_width * width)
-            box_height = int(rel_height * height)
+            x, y, box_width, box_height = convertRelativeToAbsolute(rel_x , rel_y, rel_width, rel_height, width, height)
         else:
             x, y, box_width, box_height, category = [int(a) for a in label]
 

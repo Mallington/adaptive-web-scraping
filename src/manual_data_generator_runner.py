@@ -32,7 +32,8 @@ if __name__ == "__main__":
     myJSON = src.scraping.hyper_physics_urls.hyper_physics_urls
 
     myJSON=["https://www.amazon.co.uk/Echo-Dot-3rd-Gen-Charcoal/dp/B07PJV3JPR/",
-            "https://uk.banggood.com/Vintage-Floral-Printed-O-neck-Long-Sleeve-Irregular-Hem-T-shirt-For-Women-p-1743627.html",
+            "https://www.screwfix.com/p/titan-tti821ggt-18v-2-0ah-li-ion-txp-cordless-grass-trimmer/380pt",
+            "https://www.butterfly.co.uk/collections/wooden-gifts/products/copy-of-personalised-wooden-candlesticks-light-beech-with-leather-insert",
             "https://uk.banggood.com/Women-Vintage-Abstract-Figure-Printed-O-Neck-Irregular-Hem-Long-Sleeve-Blouse-p-1743629.html"]
     count =0
 

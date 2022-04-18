@@ -104,7 +104,7 @@ class Model_Handler:
 
 if __name__ == "__main__":
     from src.yolo.yolo_box_visualiser import show_image_with_labels
-    loaded_image = cv2.imread("../../../../../../var/folders/j6/2rvpb16156j8_s_r83ddmd0w0000gn/T/TemporaryItems/NSIRD_screencaptureui_xzqmYn/Screenshot 2022-04-18 at 15.43.51.png")
+    loaded_image = cv2.imread("../../../../../../var/folders/j6/2rvpb16156j8_s_r83ddmd0w0000gn/T/TemporaryItems/NSIRD_screencaptureui_wOyRNv/Screenshot 2022-04-18 at 21.50.24.png")
     model_handler = Model_Handler("/Users/mathew/github/adaptive-web-scraping/models/CoVa-dataset-train-V1.pt", [640, 640])
     predictions_relative, predictions_absolute = model_handler.predict(loaded_image)
 
