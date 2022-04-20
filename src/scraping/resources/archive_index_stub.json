@@ -2,7 +2,8 @@
   "configuration": {
     "screenshotFolder": "screenshots/",
     "htmlFolder": "html/",
-    "masterScreenshotFolder": "master-screenshots/"
+    "masterScreenshotFolder": "master-screenshots/",
+    "extraFeatures": "extra-features/"
   },
   "snapshots": [],
   "master_snapshots": [],

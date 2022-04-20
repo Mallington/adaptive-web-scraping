@@ -18,4 +18,5 @@ def extract_html(driver: webdriver.Firefox, element: webdriver.Firefox):
 
 def make_elements_red(driver: webdriver.Firefox, x0, y0, x1, y1):
     run_script(driver, os.path.join(os.path.dirname(__file__), '../scraping/resources/boundingboxlib.js'))
+    print(x0, y0, x1, y1)
     driver.execute_script("window.make_elements_red_within(arguments[0],arguments[1],arguments[2],arguments[3])", x0, y0, x1, y1)

@@ -699,3 +699,6 @@ hyper_physics_urls=[
   "http://hyperphysics.phy-astr.gsu.edu/hbase/particles/expar.html#c3",
   "http://hyperphysics.phy-astr.gsu.edu/hbase/quantum/zeeman.html#c1"
 ]
+
+# https://wise.com/us/blog/best-online-shopping-websites
+search_queries=["site:https://www.amazon.co.uk/dp/*", "site:https://www.redbubble.com/i/*", "site:https://www.ebay.co.uk/itm/*", "site:https://www.walmart.com/ip/*", "site:https://www.etsy.com/uk/listing/*" ]

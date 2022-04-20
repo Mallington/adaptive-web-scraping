@@ -1,5 +1,8 @@
 selenium~=3.141.0
 opencv-python
+currency-symbols
+
+
 # Base ----------------------------------------
 matplotlib>=3.2.2
 numpy>=1.18.5

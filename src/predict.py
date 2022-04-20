@@ -58,4 +58,4 @@ class AdaptivePredictor:
 if __name__ == "__main__":
     predictor = AdaptivePredictor("/Users/mathew/github/adaptive-web-scraping/models/CoVa-dataset-train-V1.pt")
 
-    predictor.predict_url("https://www.autotrader.co.uk/classified/advert/new/202203284019517")
+    predictor.predict_url("https://www.facebook.com/marketplace/item/542220967526408/?ref=browse_tab&referral_code=marketplace_top_picks&referral_story_type=top_picks", load_wait=3)

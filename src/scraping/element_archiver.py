@@ -30,7 +30,7 @@ class ElementArchiver:
         os.makedirs(os.path.join(self.data_location, self.index_dictionary["configuration"]["screenshotFolder"]), exist_ok=True)
         os.makedirs(os.path.join(self.data_location, self.index_dictionary["configuration"]["htmlFolder"]), exist_ok=True)
         os.makedirs(os.path.join(self.data_location, self.index_dictionary["configuration"]["masterScreenshotFolder"]), exist_ok=True)
-
+        os.makedirs(os.path.join(self.data_location, self.index_dictionary["configuration"]["extraFeatures"]), exist_ok=True)
         pass
 
     def add_master_snapshot(self, snapshot_details: dict):

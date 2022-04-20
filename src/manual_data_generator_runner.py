@@ -1,6 +1,6 @@
 import os.path
 
-import src.scraping.hyper_physics_urls
+import src.scraping.url_lists
 from src.scraping.archive_builder import ArchiveBuilder
 from src.scraping.support.extractors.dom_selector_extractor import DomExtractorSelector
 from src.scraping.yolo_config_generator import YoloConfigGenerator
@@ -24,22 +24,21 @@ def confirm(question, default_no=True):
     return False
 if __name__ == "__main__":
     print("Adaptive Web Scraping by Github.com/Mallington")
-    archive_location = "/Users/mathew/github/adaptive-web-scraping/shopping-validation/"
+    archive_location = "/Users/mathew/github/adaptive-web-scraping/labelling/"
     # product_extractor = DomExtractorSelector(["title", "summary", "figure", "formula", "table"])
-    product_extractor = DomExtractorSelector(["interest_area", "not_interesting"])
+    product_extractor = DomExtractorSelector(["title", "price", "description", "image"], other_elements="other_elements")
     archive_builder = ArchiveBuilder(archive_location)
 
-    myJSON = src.scraping.hyper_physics_urls.hyper_physics_urls
 
     myJSON=["https://www.amazon.co.uk/Echo-Dot-3rd-Gen-Charcoal/dp/B07PJV3JPR/",
-            "https://www.screwfix.com/p/titan-tti821ggt-18v-2-0ah-li-ion-txp-cordless-grass-trimmer/380pt",
+            "https://uk.banggood.com/Women-Vintage-Abstract-Figure-Printed-O-Neck-Irregular-Hem-Long-Sleeve-Blouse-p-1743629.html",
             "https://www.butterfly.co.uk/collections/wooden-gifts/products/copy-of-personalised-wooden-candlesticks-light-beech-with-leather-insert",
             "https://uk.banggood.com/Women-Vintage-Abstract-Figure-Printed-O-Neck-Irregular-Hem-Long-Sleeve-Blouse-p-1743629.html"]
     count =0
 
     try:
         for el in myJSON[1:]:
-            if count % 2 ==0 and not confirm("Do you want to continue?"):
+            if count==0 or (count % 2 ==0 and not confirm("Do you want to continue?")):
                 print("Another 50 done")
             if count >500:
                 break

@@ -1,4 +1,26 @@
 from selenium.webdriver.firefox import webdriver
+import re
+import src.utils.currency_symbols
+
+from selenium import webdriver
+from selenium.webdriver.remote.webelement import WebElement
+CURRENCIES_LIST = list(src.utils.currency_symbols.CURRENCY_SYMBOLS_MAP.values())
+
+interesting_tags = ["h1",	"img", "span"	, "a"	, "div"	, "p"	, "iframe"	, "h2"	, "strong"	, "canvas"	, "h3"]
+TAG_PREFIX="tag_"
+PARENT_SUFFIX="_parent_"
+
+
+FONT_SIZE="font_size"
+CONTAINS_CURRENCY = "contains_currency"
+RATIO="ratio"
+OTHER_TAG="other_tag"
+NO_TAG="no_tag"
+
+
+CONTAINS_NUMBER = "contains_number"
+
+CATEGORY = "category"
 
 
 class HtmlDatasetEncoder:
@@ -10,7 +32,37 @@ class HtmlDatasetEncoder:
             i=+1
         pass
 
+    def find_interesting_tags(self, extracted_element: webdriver.Firefox, dict, suffix=""):
+        found = False
+        for tag in interesting_tags:
+            isTag = False if extracted_element is None else (extracted_element.tag_name.lower() == tag.lower())
+            found = found or isTag
+            dict[f"{TAG_PREFIX}{tag}{suffix}"] = int(isTag)
 
-    def encode_element(self, dom: webdriver.Firefox,  category : str):
+        dict[f"{OTHER_TAG}{suffix}"] = int(not found and (extracted_element is not None)) # No recognisable tage
+        dict[f"{NO_TAG}{suffix}"] = int(extracted_element is None)
 
-        print(category)
+    def try_get_parent(self, extracted_element: webdriver.Firefox):
+        try:
+            return extracted_element.find_element_by_xpath("./..")
+        except:
+            return None
+
+    def encode_element(self, extracted_element: webdriver.Firefox,  category : str, parent_depth=3):
+        dict = {
+            FONT_SIZE: int(re.sub('[^\d]','', extracted_element.value_of_css_property('font-size'))),
+            CONTAINS_CURRENCY : int(any(map(extracted_element.text.__contains__, CURRENCIES_LIST))),
+            RATIO : extracted_element.size['width']/extracted_element.size['height'],
+            CONTAINS_NUMBER: int(any(map(extracted_element.text.__contains__, ["0","1","2","3","4","5","6","7","8","9"])))
+        }
+
+        self.find_interesting_tags(extracted_element, dict)
+
+        current_parent = self.try_get_parent(extracted_element)
+        for i in range(parent_depth):
+            self.find_interesting_tags(current_parent, dict, f"{PARENT_SUFFIX}{i}")
+
+            current_parent = None if current_parent is None else self.try_get_parent(current_parent)
+
+
+        return dict
