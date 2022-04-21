@@ -1,10 +1,12 @@
 import os.path
 
-import src.scraping.url_lists
+from src.scraping.url_lists import master_link_list, raw_links
 from src.scraping.archive_builder import ArchiveBuilder
 from src.scraping.support.extractors.dom_selector_extractor import DomExtractorSelector
 from src.scraping.yolo_config_generator import YoloConfigGenerator
 import os
+
+import pickle as pk
 # click event handler
 
 def confirm(question, default_no=True):
@@ -22,26 +24,35 @@ def confirm(question, default_no=True):
 
 
     return False
+
+
 if __name__ == "__main__":
     print("Adaptive Web Scraping by Github.com/Mallington")
-    archive_location = "/Users/mathew/github/adaptive-web-scraping/labelling/"
+    archive_location = "/Users/mathew/github/adaptive-web-scraping/data/retail-individual-fields-dataset"
+    cookie_save_location = '/Users/mathew/github/adaptive-web-scraping/cookies/user-cookies.pkl'
+
     # product_extractor = DomExtractorSelector(["title", "summary", "figure", "formula", "table"])
     product_extractor = DomExtractorSelector(["title", "price", "description", "image"], other_elements="other_elements")
     archive_builder = ArchiveBuilder(archive_location)
 
+    if os.path.exists(cookie_save_location):
+        cookies_dict = pk.load(open(cookie_save_location, "rb"))
+        product_extractor.accept_cookies_auto(archive_builder.driver, cookies_dict)
 
-    myJSON=["https://www.amazon.co.uk/Echo-Dot-3rd-Gen-Charcoal/dp/B07PJV3JPR/",
-            "https://uk.banggood.com/Women-Vintage-Abstract-Figure-Printed-O-Neck-Irregular-Hem-Long-Sleeve-Blouse-p-1743629.html",
-            "https://www.butterfly.co.uk/collections/wooden-gifts/products/copy-of-personalised-wooden-candlesticks-light-beech-with-leather-insert",
-            "https://uk.banggood.com/Women-Vintage-Abstract-Figure-Printed-O-Neck-Irregular-Hem-Long-Sleeve-Blouse-p-1743629.html"]
+    else:
+        cookies_dict = product_extractor.accept_cookies(archive_builder.driver, raw_links)
+        pk.dump(cookies_dict, open(cookie_save_location, "wb"))
+
+
+
+    urls_to_train = master_link_list
     count =0
 
     try:
-        for el in myJSON[1:]:
-            if count==0 or (count % 2 ==0 and not confirm("Do you want to continue?")):
-                print("Another 50 done")
-            if count >500:
-                break
+        for el in urls_to_train[1:]:
+            if count %50 ==0 and count>0:
+                if not confirm("Do you want to continue?"):
+                    break
             print(el)
             print(count, "done")
             archive_builder.add_site(el, product_extractor)

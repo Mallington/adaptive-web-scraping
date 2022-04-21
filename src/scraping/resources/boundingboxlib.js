@@ -27,7 +27,7 @@ window.make_elements_red = function (elements) {
     }
 }
 
-window.drawRectangleOverDocument = function (x1,y1,x2,y2){
+window.drawRectangleOverDocument = function (x1,y1,x2,y2, colour){
 
     var canvas = document.createElement('canvas'); //Create a canvas element
     //Set canvas width/height
@@ -46,12 +46,12 @@ window.drawRectangleOverDocument = function (x1,y1,x2,y2){
     var context = canvas.getContext('2d');
     //Draw rectangle
     context.rect(x1,y1,x2-x1,y2-y1);
-    context.fillStyle = "rgba(255, 0, 0, 0.2)";
+    context.fillStyle = colour;
     context.fill();
 }
 
-window.make_elements_red_within = function (x1, y1, x2, y2) {
+window.colour_elements_within = function (x1, y1, x2, y2, colour) {
     // var elements = window.rectangleSelect("*", x1, y1, x2, y2);
     // window.make_elements_red(elements);
-    window.drawRectangleOverDocument(x1, y1, x2, y2);
+    window.drawRectangleOverDocument(x1, y1, x2, y2, colour);
 }

@@ -16,7 +16,7 @@ def extract_html(driver: webdriver.Firefox, element: webdriver.Firefox):
     driver.execute_script("window.insertStyleForAllElementsIn(arguments[0]);", element)
     return element.get_attribute("outerHTML")
 
-def make_elements_red(driver: webdriver.Firefox, x0, y0, x1, y1):
+def mark_elements_with_colour(driver: webdriver.Firefox, x0, y0, x1, y1, colour="rgba(255, 0, 0, 0.3)"):
     run_script(driver, os.path.join(os.path.dirname(__file__), '../scraping/resources/boundingboxlib.js'))
     print(x0, y0, x1, y1)
-    driver.execute_script("window.make_elements_red_within(arguments[0],arguments[1],arguments[2],arguments[3])", x0, y0, x1, y1)
+    driver.execute_script("window.colour_elements_within(arguments[0],arguments[1],arguments[2],arguments[3], arguments[4])", x0, y0, x1, y1, colour)

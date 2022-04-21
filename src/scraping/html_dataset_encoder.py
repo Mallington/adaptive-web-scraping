@@ -1,9 +1,12 @@
+import os.path
+
 from selenium.webdriver.firefox import webdriver
 import re
 import src.utils.currency_symbols
 
 from selenium import webdriver
-from selenium.webdriver.remote.webelement import WebElement
+import csv
+
 CURRENCIES_LIST = list(src.utils.currency_symbols.CURRENCY_SYMBOLS_MAP.values())
 
 interesting_tags = ["h1",	"img", "span"	, "a"	, "div"	, "p"	, "iframe"	, "h2"	, "strong"	, "canvas"	, "h3"]
@@ -16,7 +19,7 @@ CONTAINS_CURRENCY = "contains_currency"
 RATIO="ratio"
 OTHER_TAG="other_tag"
 NO_TAG="no_tag"
-
+WORD_COUNT = "word_count"
 
 CONTAINS_NUMBER = "contains_number"
 
@@ -26,10 +29,11 @@ CATEGORY = "category"
 class HtmlDatasetEncoder:
     def __init__(self, output_file_destination, categories):
         self.cat_dict ={}
+        self.output_file_destination = output_file_destination
         i=0
         for category in categories:
             self.cat_dict[category] = i
-            i=+1
+            i+=1
         pass
 
     def find_interesting_tags(self, extracted_element: webdriver.Firefox, dict, suffix=""):
@@ -48,21 +52,35 @@ class HtmlDatasetEncoder:
         except:
             return None
 
-    def encode_element(self, extracted_element: webdriver.Firefox,  category : str, parent_depth=3):
-        dict = {
+    def append_to_file(self, row : dict):
+        exists_already = os.path.exists(self.output_file_destination)
+        with open(self.output_file_destination, 'a+') as file:
+            writer = csv.writer(file)
+            if not exists_already:
+                writer.writerows([list(row.keys())])
+            writer.writerows([list(row.values())])
+
+
+    def encode_element(self, extracted_element: webdriver.Firefox,  category : str, parent_depth=3, additional_features={}):
+        features = {
+            CATEGORY: self.cat_dict[category],
             FONT_SIZE: int(re.sub('[^\d]','', extracted_element.value_of_css_property('font-size'))),
             CONTAINS_CURRENCY : int(any(map(extracted_element.text.__contains__, CURRENCIES_LIST))),
             RATIO : extracted_element.size['width']/extracted_element.size['height'],
-            CONTAINS_NUMBER: int(any(map(extracted_element.text.__contains__, ["0","1","2","3","4","5","6","7","8","9"])))
+            CONTAINS_NUMBER: int(any(map(extracted_element.text.__contains__, ["0","1","2","3","4","5","6","7","8","9"]))),
+            WORD_COUNT: len(extracted_element.text.split(" "))
         }
 
-        self.find_interesting_tags(extracted_element, dict)
+        self.find_interesting_tags(extracted_element, features)
 
         current_parent = self.try_get_parent(extracted_element)
         for i in range(parent_depth):
-            self.find_interesting_tags(current_parent, dict, f"{PARENT_SUFFIX}{i}")
+            self.find_interesting_tags(current_parent, features, f"{PARENT_SUFFIX}{i}")
 
             current_parent = None if current_parent is None else self.try_get_parent(current_parent)
 
+        feature_sum = {**features, **additional_features}
 
-        return dict
+        self.append_to_file(feature_sum)
+
+        return feature_sum

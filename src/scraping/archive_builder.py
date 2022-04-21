@@ -13,8 +13,12 @@ from src.scraping.html_dataset_encoder import HtmlDatasetEncoder
 
 from selenium import webdriver
 from selenium.webdriver.remote.webelement import WebElement
+
+from src.utils.bounding_box_utils import convertRelativeToWebpage
 from src.utils.rectangle import Rect
 
+REGION_INTERSECTED_TAG = "intersected_region"
+URL_TAG = "url"
 class ArchiveBuilder:
     def __init__(self, data_location, driver: webdriver = None):
         self.driver = webdriver.Firefox() if driver is None else driver
@@ -28,11 +32,15 @@ class ArchiveBuilder:
         element_rect = Rect(extracted_element.rect['x'], extracted_element.rect['y'], extracted_element.rect['width'], extracted_element.rect['height'])
         any_intersected = False
 
-        src.utils.web_driver_utils.make_elements_red(self.driver, element_rect.l_top.x, element_rect.l_top.y, element_rect.r_bot.x, element_rect.r_bot.y)
+
         for interestRegion in interestList:
-            interest_rect = Rect(interestRegion[1], interestRegion[2], interestRegion[3]-interestRegion[1], interestRegion[4]- interestRegion[2])
+            cat, rel_x, rel_y, rel_width, rel_height = interestRegion
+            x, y, box_width, box_height = convertRelativeToWebpage(rel_x, rel_y, rel_width, rel_height, self.driver)
+            interest_rect = Rect(x, y, box_width, box_height)
             any_intersected = any_intersected or interest_rect.overlaps_with(element_rect)
 
+        colour = "rgba(0, 255, 0, 0.4)" if any_intersected else "rgba(0, 0, 255, 0.4)"
+        src.utils.web_driver_utils.mark_elements_with_colour(self.driver, element_rect.l_top.x, element_rect.l_top.y, element_rect.r_bot.x, element_rect.r_bot.y, colour=colour)
         return any_intersected
 
     def add_site(self, url: str, element_extractor: ElementExtractorInterface):
@@ -51,22 +59,28 @@ class ArchiveBuilder:
         screenshot_loaded = cv2.imread(master_screenshot_absolute_path)
         filtered_relative_regions, filtered_absolute_regions = self.rcnn_predictor.predict_interest_regions(screenshot_loaded)
 
-        extra_features_path = f"{master_screenshot_id}.png"
+        extra_features_path = f"{master_screenshot_id}.csv"
         extra_features_path_absolute_path = os.path.join(self.element_archiver.data_location,
                                                          self.element_archiver.index_dictionary["configuration"][
                                                              "extraFeatures"], extra_features_path)
         html_encoder = HtmlDatasetEncoder(extra_features_path_absolute_path, element_extractor.available_categories())
 
-
         for category in element_extractor.available_categories():
             extracted_elements = element_extractor.extract_elements(self.driver, category)
             for extracted_element in extracted_elements:
 
-                intersected_with_region =  self.checkForIntersection(filtered_absolute_regions, extracted_element)
-                dict_encoded = html_encoder.encode_element(extracted_element, category)
-
 
                 try:
+                    intersected_with_region = self.checkForIntersection(filtered_relative_regions, extracted_element)
+                    additional_features = {
+                        REGION_INTERSECTED_TAG: int(intersected_with_region),
+                        URL_TAG: url
+                    }
+                    dict_encoded = html_encoder.encode_element(extracted_element, category,
+                                                               additional_features=additional_features)
+                    print(dict_encoded)
+
+
                     doc_width = self.driver.execute_script("""return window.innerWidth""")
                     doc_height = self.driver.execute_script("""return window.innerHeight""")
                     attributes= {

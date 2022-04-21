@@ -1,3 +1,5 @@
+from serpapi import GoogleSearch
+
 hyper_physics_urls=[
   "http://hyperphysics.phy-astr.gsu.edu/hbase/goo.html#c1",
   "http://hyperphysics.phy-astr.gsu.edu/hbase/acca.html#c1",
@@ -701,4 +703,42 @@ hyper_physics_urls=[
 ]
 
 # https://wise.com/us/blog/best-online-shopping-websites
-search_queries=["site:https://www.amazon.co.uk/dp/*", "site:https://www.redbubble.com/i/*", "site:https://www.ebay.co.uk/itm/*", "site:https://www.walmart.com/ip/*", "site:https://www.etsy.com/uk/listing/*" ]
+search_queries = ["site:https://www.amazon.co.uk/dp/*", "site:https://www.redbubble.com/i/*", "site:https://www.ebay.co.uk/itm/*", "site:https://www.walmart.com/ip/*", "site:https://www.etsy.com/uk/listing/*", "site:https://www.target.com/p/*", "site:https://www.kohls.com/product/*", "site:https://pl.aliexpress.com/item/*", "site:https://www.asos.com/accessorize/*" ]
+
+amazon_links=['https://www.amazon.co.uk/dp/B09QZD8YWS', 'https://www.amazon.co.uk/dp/B09Y68NJ8S', 'https://www.amazon.co.uk/dp/B09X9CK7F4', 'https://www.amazon.co.uk/dp/B00OACTIN4', 'https://www.amazon.co.uk/dp/B00E5TLUU6', 'https://www.amazon.co.uk/dp/B005WZ6ECQ', 'https://www.amazon.co.uk/dp/B016JVXQRM', 'https://www.amazon.co.uk/dp/4478105065', 'https://www.amazon.co.uk/dp/B09XLNJH55']
+
+redbubble_links=['https://www.redbubble.com/i/sticker/HYPERS-by-8aobao/52806735.EJUG5', 'https://www.redbubble.com/i/sticker/meme-by-Dhramos/81351894.EJUG5', 'https://www.redbubble.com/i/sticker/Quaxly-by-magmaadmin/103191380.EJUG5', 'https://www.redbubble.com/i/sticker/Sarimanok-by-BeritValk/62296608.EJUG5', 'https://www.redbubble.com/i/sticker/Blobfish-by-JiruSenpai/43180432.EJUG5', 'https://www.redbubble.com/i/sticker/sid-by-ExoticJam/51743599.EJUG5', 'https://www.redbubble.com/i/sticker/Coraline-by-tabithahope07/29531025.EJUG5', 'https://www.redbubble.com/i/poster/Axolotl-by-SkyAfterDusk/84222887.LVTDI', 'https://www.redbubble.com/i/sticker/1999-by-ambamears/51259425.EJUG5', 'https://www.redbubble.com/i/sticker/Stich-by-MOTHERDAUGHTER/40371032.EJUG5']
+
+#Annoying ad popup shifts everything in view
+#ebay_links=['https://www.ebay.co.uk/itm/143309762540', 'https://www.ebay.co.uk/itm/162982659298', 'https://www.ebay.co.uk/itm/402816246235', 'https://www.ebay.co.uk/itm/153371842812', 'https://www.ebay.co.uk/itm/162723881001', 'https://www.ebay.co.uk/itm/174298428401', 'https://www.ebay.co.uk/itm/153672890953', 'https://www.ebay.co.uk/itm/254493532133', 'https://www.ebay.co.uk/itm/284585840640', 'https://www.ebay.co.uk/itm/402961466930']
+
+# Annoying robot elements
+# walmart_links=['https://www.walmart.com/ip/22471958', 'https://www.walmart.com/ip/22472037', 'https://www.walmart.com/ip/22472010', 'https://www.walmart.com/ip/22471984', 'https://www.walmart.com/ip/Rimadyl/22472005', 'https://www.walmart.com/ip/seort/417702583', 'https://www.walmart.com/ip/ionchill/671995537', 'https://www.walmart.com/ip/Metacam/22472289', 'https://www.walmart.com/ip/Plantains/34143814', 'https://www.walmart.com/ip/Merchandise/675430596']
+
+etsy_links=['https://www.etsy.com/uk/listing/473432734/', 'https://www.etsy.com/uk/listing/1120955447', 'https://www.etsy.com/uk/listing/1141328946/', 'https://www.etsy.com/uk/listing/797322949/treebeard', 'https://www.etsy.com/uk/listing/787264736/lone-wolf', 'https://www.etsy.com/uk/listing/846109561/hbcus-map', 'https://www.etsy.com/uk/listing/1069929813/lady-dimitrescu', 'https://www.etsy.com/uk/listing/917861189/beach-zhongli', 'https://www.etsy.com/uk/listing/728395629/red-balloons', 'https://www.etsy.com/uk/listing/842577902/spider-tattoo']
+
+target_links=['https://www.target.com/p/bananagrams-game/-/A-11152283', 'https://www.target.com/p/pursuit-2022/-/A-85854550', 'https://www.target.com/p/flamingos-giftcard/-/A-54378590', 'https://www.target.com/p/strawberries-2lb/-/A-17296921', 'https://www.target.com/p/avocado-each/-/A-47095644', 'https://www.target.com/p/encanto-dvd/-/A-85128662', 'https://www.target.com/p/lemon-each/-/A-15013629', 'https://www.target.com/p/crossfire-game/-/A-53586824', 'https://www.target.com/p/banana-each/-/A-15013944', 'https://www.target.com/p/lime-each/-/A-15026731']
+
+#Takes too long to load
+# kohls_links=['https://www.kohls.com/product/prd-3214916/silicone-ring.jsp', 'https://www.kohls.com/product/prd-3849008/barbie-accessories.jsp', 'https://www.kohls.com/product/prd-2398452/relic-bifold-wallet.jsp', 'https://www.kohls.com/product/prd-155467/champion-mesh-shorts.jsp', 'https://www.kohls.com/product/prd-1600920/champion-pants-womens.jsp', 'https://www.kohls.com/product/prd-3836553/barbie-dreamplane-playset.jsp', 'https://www.kohls.com/product/prd-3043908/norelco-multigroom-7000.jsp', 'https://www.kohls.com/product/prd-5115185/barbie-dreamhouse-playset.jsp', 'https://www.kohls.com/product/prd-1867687/pokmon-card-game.jsp', 'https://www.kohls.com/product/prd-3425432/pikmi-pops-flip.jsp']
+
+aliexpress_links=['https://pl.aliexpress.com/item/32968963563.html', 'https://pl.aliexpress.com/item/32238303840.html', 'https://pl.aliexpress.com/item/32503354815.html', 'https://pl.aliexpress.com/item/32708245703.html', 'https://pl.aliexpress.com/item/32947918338.html', 'https://pl.aliexpress.com/item/32303792021.html', 'https://pl.aliexpress.com/item/4001025606683.html', 'https://pl.aliexpress.com/item/1005002291932732.html', 'https://pl.aliexpress.com/item/1005002479455261.html', 'https://pl.aliexpress.com/item/32949924471.html']
+
+asos_links=['https://www.asos.com/accessorize/accessorize-erin-sundress/prd/10007251', 'https://www.asos.com/accessorize/accessorize-ruffle-swimsuit/prd/10007263', 'https://www.asos.com/accessorize/accessorize-sequin-scrunchie/prd/10340746', 'https://www.asos.com/accessorize/accessorize-paradise-swimsuit/prd/10007809', 'https://www.asos.com/accessorize/accessorize-zanzibar-swimsuit/prd/10007249', 'https://www.asos.com/accessorize/accessorize-beachcomber-playsuit/prd/10007257', 'https://www.asos.com/accessorize/accessorize-exotic-sequin-bumbag/prd/9993791', 'https://www.asos.com/accessorize/accessorize-black-leather-gloves/prd/12461812', 'https://www.asos.com/accessorize/accessorize-dreamweaver-bikini-bottoms/prd/10054570', 'https://www.asos.com/accessorize/accessorize-black-emily-tote/prd/10068221']
+
+# bath_uni_gifts=['https://bathunigifts.com/university-of-bath-burgundy-hoodie-7870-p.asp', 'https://bathunigifts.com/university-of-bath-charcoal-hoodie-7865-p.asp', 'https://bathunigifts.com/av-polo-shirt-black--grey-11798-p.asp', 'https://bathunigifts.com/av-polo-shirt-navy--purple-11782-p.asp', 'https://bathunigifts.com/av-polo-shirt-navy--white-11790-p.asp', 'https://bathunigifts.com/co-op-still-natural-mineral-water-1l-10050-p.asp', 'https://bathunigifts.com/hbs-beancurd-bbq-flavour-68g-8485-p.asp', 'https://bathunigifts.com/co-op-custard-cream-biscuits-300g-8416-p.asp', 'https://bathunigifts.com/co-op-cucumber-10019-p.asp', 'https://bathunigifts.com/doritos-cool-original-150g-8422-p.asp']
+
+raw_links=['https://www.amazon.co.uk/', 'https://www.redbubble.com/', 'https://www.ebay.co.uk/', 'https://www.walmart.com/', 'https://www.etsy.com/', 'https://www.target.com/', 'https://www.kohls.com/', 'https://pl.aliexpress.com/', 'https://www.asos.com/']
+
+master_link_list = amazon_links + redbubble_links + aliexpress_links + asos_links
+
+
+def generate_links_from_google_search(search_terms : list, api_key: str):
+  all = []
+
+  for url in search_terms:
+    search = GoogleSearch({"q": url, "location": "united kingdom", "api_key": api_key})
+    all += [a['link'] for a in search.get_dictionary()['organic_results']]
+
+  return all
+

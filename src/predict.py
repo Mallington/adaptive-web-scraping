@@ -3,8 +3,8 @@ import cv2
 from selenium import webdriver
 from selenium.webdriver.remote.webelement import WebElement
 
-from src.utils.bounding_box_utils import convertRelativeToAbsolute
-from src.utils.web_driver_utils import make_elements_red
+from src.utils.bounding_box_utils import convertRelativeToAbsolute, convertRelativeToWebpage
+from src.utils.web_driver_utils import mark_elements_with_colour
 from src.yolo.yolo_box_visualiser import show_image_with_labels
 from src.yolo.yolo_model_handler import Model_Handler
 import tempfile
@@ -36,16 +36,12 @@ class AdaptivePredictor:
         filtered_relative_regions = list(filter(lambda a: a[0] == interest_class_index, predictions_relative))
         filtered_absolute_regions = list(filter(lambda a: a[0] == interest_class_index, predictions_absolute))
 
+
         if len(filtered_relative_regions) and browser_debug:
             cat, rel_x, rel_y, rel_width, rel_height = filtered_relative_regions[0]
 
-            innerWidth, innerHeight = self.driver.execute_script("return window.innerWidth"), self.driver.execute_script(
-                "return window.innerHeight")
-
-            x, y, box_width, box_height = convertRelativeToAbsolute(rel_x, rel_y, rel_width, rel_height, innerWidth,
-                                                                    innerHeight)
-
-            make_elements_red(self.driver, x, y, x + box_width, y + box_height)
+            x, y, box_width, box_height = convertRelativeToWebpage(rel_x, rel_y, rel_width, rel_height, self.driver)
+            mark_elements_with_colour(self.driver, x, y, x + box_width, y + box_height)
 
         if cv2_debug:
             show_image_with_labels(loaded_image, predictions_relative, names=["interest_area", "not_interesting"])
@@ -58,4 +54,4 @@ class AdaptivePredictor:
 if __name__ == "__main__":
     predictor = AdaptivePredictor("/Users/mathew/github/adaptive-web-scraping/models/CoVa-dataset-train-V1.pt")
 
-    predictor.predict_url("https://www.facebook.com/marketplace/item/542220967526408/?ref=browse_tab&referral_code=marketplace_top_picks&referral_story_type=top_picks", load_wait=3)
+    predictor.predict_url("https://www.asos.com/accessorize/accessorize-zanzibar-swimsuit/prd/10007249", load_wait=3)

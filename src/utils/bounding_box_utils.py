@@ -41,3 +41,11 @@ def convertRelativeToAbsolute(rel_x , rel_y, rel_width, rel_height, width, heigh
 
     return x, y, box_width, box_height
 
+
+def convertRelativeToWebpage(rel_x , rel_y, rel_width, rel_height, driver):
+
+    innerWidth, innerHeight = driver.execute_script("return window.innerWidth"), driver.execute_script(
+                    "return window.innerHeight")
+
+    return convertRelativeToAbsolute(rel_x, rel_y, rel_width, rel_height, innerWidth, innerHeight)
+
