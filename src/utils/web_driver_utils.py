@@ -20,3 +20,6 @@ def mark_elements_with_colour(driver: webdriver.Firefox, x0, y0, x1, y1, colour=
     run_script(driver, os.path.join(os.path.dirname(__file__), '../scraping/resources/boundingboxlib.js'))
     print(x0, y0, x1, y1)
     driver.execute_script("window.colour_elements_within(arguments[0],arguments[1],arguments[2],arguments[3], arguments[4])", x0, y0, x1, y1, colour)
+
+def get_text_nodes(driver: webdriver.Firefox):
+    return list(filter(lambda element: len(element.text), driver.find_elements_by_xpath("//*[not(child::*) and text()]")))
