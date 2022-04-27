@@ -1,7 +1,7 @@
 selenium~=3.141.0
 opencv-python
 currency-symbols
-
+scikit-learn
 
 # Base ----------------------------------------
 matplotlib>=3.2.2

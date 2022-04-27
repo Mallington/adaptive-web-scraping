@@ -6,7 +6,7 @@ import src.utils.currency_symbols
 
 from selenium import webdriver
 import csv
-
+import pandas as pd
 CURRENCIES_LIST = list(src.utils.currency_symbols.CURRENCY_SYMBOLS_MAP.values())
 
 interesting_tags = ["h1",	"img", "span"	, "a"	, "div"	, "p"	, "iframe"	, "h2"	, "strong"	, "canvas"	, "h3"]
@@ -27,14 +27,18 @@ CATEGORY = "category"
 
 
 class HtmlDatasetEncoder:
-    def __init__(self, output_file_destination, categories):
-        self.cat_dict ={}
+    def __init__(self, categories=None, output_file_destination= None):
         self.output_file_destination = output_file_destination
-        i=0
-        for category in categories:
-            self.cat_dict[category] = i
-            i+=1
-        pass
+
+        if categories is not None:
+            self.cat_dict ={}
+            i=0
+            for category in categories:
+                self.cat_dict[category] = i
+                i+=1
+            pass
+        else:
+            self.cat_dict = None
 
     def find_interesting_tags(self, extracted_element: webdriver.Firefox, dict, suffix=""):
         found = False
@@ -61,9 +65,8 @@ class HtmlDatasetEncoder:
             writer.writerows([list(row.values())])
 
 
-    def encode_element(self, extracted_element: webdriver.Firefox,  category : str, parent_depth=3, additional_features={}):
+    def encode_element(self, extracted_element: webdriver.Firefox,  category : str = None, parent_depth=3, additional_features={}):
         features = {
-            CATEGORY: self.cat_dict[category],
             FONT_SIZE: int(re.sub('[^\d]','', extracted_element.value_of_css_property('font-size'))),
             CONTAINS_CURRENCY : int(any(map(extracted_element.text.__contains__, CURRENCIES_LIST))),
             RATIO : extracted_element.size['width']/extracted_element.size['height'],
@@ -81,6 +84,15 @@ class HtmlDatasetEncoder:
 
         feature_sum = {**features, **additional_features}
 
-        self.append_to_file(feature_sum)
+        category_dict = {CATEGORY: self.cat_dict[category] if self.cat_dict is not None else category}
+        if category is not None:
+            feature_sum = {**category_dict, **feature_sum}
+
+        if self.output_file_destination is not None:
+            self.append_to_file(feature_sum)
+
 
         return feature_sum
+
+    def encode_element_pd(self, extracted_element: webdriver.Firefox, category: str = None, parent_depth=3, additional_features={}):
+        return pd.DataFrame(self.encode_element(extracted_element, category, parent_depth, additional_features), index=[0])

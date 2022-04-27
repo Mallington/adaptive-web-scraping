@@ -18,3 +18,5 @@ def merge_cova_features(extra_features_directory, bboxes_directory):
                             csv_destination.writelines([str_app])
                         first_line_of_file = False
                         first_ever_line = False
+
+

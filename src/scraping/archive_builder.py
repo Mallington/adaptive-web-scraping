@@ -63,13 +63,11 @@ class ArchiveBuilder:
         extra_features_path_absolute_path = os.path.join(self.element_archiver.data_location,
                                                          self.element_archiver.index_dictionary["configuration"][
                                                              "extraFeatures"], extra_features_path)
-        html_encoder = HtmlDatasetEncoder(extra_features_path_absolute_path, element_extractor.available_categories())
+        html_encoder = HtmlDatasetEncoder(element_extractor.available_categories(), extra_features_path_absolute_path)
 
         for category in element_extractor.available_categories():
             extracted_elements = element_extractor.extract_elements(self.driver, category)
             for extracted_element in extracted_elements:
-
-
                 try:
                     intersected_with_region = self.checkForIntersection(filtered_relative_regions, extracted_element)
                     additional_features = {
