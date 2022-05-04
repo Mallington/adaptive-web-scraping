@@ -15,6 +15,7 @@ from selenium import webdriver
 from selenium.webdriver.remote.webelement import WebElement
 
 from src.utils.bounding_box_utils import convertRelativeToWebpage
+from src.utils.rcnn_utils import checkForIntersection
 from src.utils.rectangle import Rect
 
 REGION_INTERSECTED_TAG = "intersected_region"
@@ -26,22 +27,6 @@ class ArchiveBuilder:
         self.element_archiver = ElementArchiver(data_location)
 
         self.rcnn_predictor = AdaptivePredictor("/Users/mathew/github/adaptive-web-scraping/models/CoVa-dataset-train-V1.pt", driver=self.driver)
-
-
-    def checkForIntersection(self, interestList, extracted_element: webdriver.Firefox):
-        element_rect = Rect(extracted_element.rect['x'], extracted_element.rect['y'], extracted_element.rect['width'], extracted_element.rect['height'])
-        any_intersected = False
-
-
-        for interestRegion in interestList:
-            cat, rel_x, rel_y, rel_width, rel_height = interestRegion
-            x, y, box_width, box_height = convertRelativeToWebpage(rel_x, rel_y, rel_width, rel_height, self.driver)
-            interest_rect = Rect(x, y, box_width, box_height)
-            any_intersected = any_intersected or interest_rect.overlaps_with(element_rect)
-
-        colour = "rgba(0, 255, 0, 0.4)" if any_intersected else "rgba(0, 0, 255, 0.4)"
-        src.utils.web_driver_utils.mark_elements_with_colour(self.driver, element_rect.l_top.x, element_rect.l_top.y, element_rect.r_bot.x, element_rect.r_bot.y, colour=colour)
-        return any_intersected
 
     def add_site(self, url: str, element_extractor: ElementExtractorInterface):
         self.driver.get(url)
@@ -59,17 +44,21 @@ class ArchiveBuilder:
         screenshot_loaded = cv2.imread(master_screenshot_absolute_path)
         filtered_relative_regions, filtered_absolute_regions = self.rcnn_predictor.predict_interest_regions(screenshot_loaded)
 
-        extra_features_path = f"{master_screenshot_id}.csv"
+        # extra_features_path = f"{master_screenshot_id}.csv"
+
+        extra_features_path = f"extra-features.csv"
         extra_features_path_absolute_path = os.path.join(self.element_archiver.data_location,
                                                          self.element_archiver.index_dictionary["configuration"][
                                                              "extraFeatures"], extra_features_path)
+
+
         html_encoder = HtmlDatasetEncoder(element_extractor.available_categories(), extra_features_path_absolute_path)
 
         for category in element_extractor.available_categories():
             extracted_elements = element_extractor.extract_elements(self.driver, category)
             for extracted_element in extracted_elements:
                 try:
-                    intersected_with_region = self.checkForIntersection(filtered_relative_regions, extracted_element)
+                    intersected_with_region = checkForIntersection(filtered_relative_regions, self.driver, extracted_element, debug=True)
                     additional_features = {
                         REGION_INTERSECTED_TAG: int(intersected_with_region),
                         URL_TAG: url

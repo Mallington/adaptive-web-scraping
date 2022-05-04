@@ -1,6 +1,6 @@
 import os.path
 
-from src.scraping.url_lists import master_link_list, raw_links
+from src.scraping.url_lists import master_link_list, raw_links, master_link_list_part_2, random_holdout_samples
 from src.scraping.archive_builder import ArchiveBuilder
 from src.scraping.support.extractors.dom_selector_extractor import DomExtractorSelector
 from src.scraping.yolo_config_generator import YoloConfigGenerator
@@ -28,11 +28,12 @@ def confirm(question, default_no=True):
 
 if __name__ == "__main__":
     print("Adaptive Web Scraping by Github.com/Mallington")
-    archive_location = "/Users/mathew/github/adaptive-web-scraping/data/retail-individual-fields-dataset"
+    archive_location = "/Users/mathew/github/adaptive-web-scraping/data/retail-holdout-validation-set"
     cookie_save_location = '/Users/mathew/github/adaptive-web-scraping/cookies/user-cookies.pkl'
 
     # product_extractor = DomExtractorSelector(["title", "summary", "figure", "formula", "table"])
     product_extractor = DomExtractorSelector(["title", "price", "description", "image"], other_elements="other_elements")
+    # product_extractor = DomExtractorSelector(["title", "price", "description"])
     archive_builder = ArchiveBuilder(archive_location)
 
     if os.path.exists(cookie_save_location):
@@ -40,12 +41,12 @@ if __name__ == "__main__":
         product_extractor.accept_cookies_auto(archive_builder.driver, cookies_dict)
 
     else:
-        cookies_dict = product_extractor.accept_cookies(archive_builder.driver, raw_links)
+        cookies_dict = product_extractor.accept_cookies(archive_builder.driver, random_holdout_samples)
         pk.dump(cookies_dict, open(cookie_save_location, "wb"))
 
 
 
-    urls_to_train = master_link_list
+    urls_to_train = random_holdout_samples
     count =0
 
     try:

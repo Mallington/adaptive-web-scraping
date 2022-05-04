@@ -8,8 +8,9 @@ from src.utils.web_driver_utils import run_script
 
 class DomExtractorSelector(ElementExtractorInterface):
     def __init__(self, categories, other_elements=None):
+
         self.other_elements = other_elements
-        self.categories = categories + [other_elements]
+        self.categories = categories + [other_elements] if other_elements is not None else categories
 
 
     def accept_cookies(self, dom: webdriver.Firefox, urls) -> dict:
